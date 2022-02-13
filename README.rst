@@ -1,4 +1,4 @@
-collection_template
-===================
+Collection of SQL
+=================
 
-template for collection repos
+WIP
