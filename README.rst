@@ -1,4 +1,4 @@
-Collection of SQL
-=================
+Collection of SQL scripts
+=========================
 
 WIP
