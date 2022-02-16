@@ -65,6 +65,13 @@ select
     upper(col),
     to_number(col),
     to_date(col, 'YYYY-MM-DD'),
+    last_day(dte),
+    add_months(last_day(dte), 3) - 1,
+    date(dte),
+    convert(datetime,'2999-12-31'),
+    dateadd(months, -3, dte),
+    months_between(dte1,dte2),
+    date_diff(dte,dte2),
     ora_hash(col1 || col2),
     count(distinct col1 || col2),
     greatest(a,b,c),
@@ -76,11 +83,14 @@ select
     regexp_replace(col, '^[^\d]+_(\d+)','\1'),
     row_number() over (partition by col order by col2 desc),
     row_number() over (order by (10)),
+    max(case when col>1 then 1 else 0 end),
     max(col) 
         keep (dense_rank first order by col2 desc nulls last) 
         over (partition by col2),
     extract(year from col),
-    utl_match.edit_distance_similarity(a,b)
+    utl_match.edit_distance_similarity(a,b),
+    list_agg(distinct col, ',') as col,
+    concat('7',chr(37))
 from tbl
 where 
     regexp_like(col,'^(ab|bc)-.+') and
