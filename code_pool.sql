@@ -65,6 +65,7 @@ select
     upper(col),
     to_number(col),
     to_date(col, 'YYYY-MM-DD'),
+    to_char(col, 'YYYYMMDD'),
     last_day(dte),
     add_months(last_day(dte), 3) - 1,
     date(dte),
