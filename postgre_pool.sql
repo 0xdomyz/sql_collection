@@ -4,7 +4,8 @@ SELECT
     TO_TIMESTAMP('2017-03-31 9:30:20', 'YYYY-MM-DD HH:MI:SS'),
     date_trunc('day', now())::date,
     start_time,
-    start_time + resolution * interval '1 second' as end_time
+    start_time + resolution * interval '1 second' as end_time,
+    extract(year from start_time) || '_' || to_char(extract(month from start_time),'FM00') as yr_mth
 from table
 where time :: date = '2022-08-23'
 ;
