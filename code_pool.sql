@@ -77,6 +77,7 @@ select
     count(distinct col1 || col2),
     greatest(a,b,c),
     nvl(a,0),
+    regexp_instr(col,'^\d'),
     regexp_substr(col,'\w+'),
     regexp_substr(col,'\d+'),
     regexp_substr(col,'\d+', 1, 1),
