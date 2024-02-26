@@ -1,33 +1,44 @@
 -- sas_sql
 
 PROC SQL;
-   CREATE TABLE WORK.TOTAL AS 
+   CREATE TABLE tmp_tbl AS 
    SELECT 
-      COALESCE(A.account_id, B.account_id) AS account_id,
-      A.product_type AS cur_product_type,
-      B.product_type AS prev_product_type,
-      A.balance AS cur_balance,
-      B.balance AS prev_balance,
+      COALESCE(cur.account_id, prev.account_id) AS account_id,
+      cur.product_type AS cur_product_type,
+      prev.product_type AS prev_product_type,
+      cur.balance AS cur_balance,
+      prev.balance AS prev_balance,
+      COALESCE(cur.balance, prev.balance) as balance,
       CASE 
-         WHEN A.account_id IS NOT NULL AND B.account_id IS NULL THEN 'NEW'
-         WHEN A.account_id IS NULL AND B.account_id IS NOT NULL THEN 'EXIT'
+         WHEN cur.account_id IS NOT NULL AND prev.account_id IS NULL THEN 'NEW'
+         WHEN cur.account_id IS NULL AND prev.account_id IS NOT NULL THEN 'EXIT'
          ELSE 'STAY'
-      END AS status_flag
+      END AS churn_status
    FROM 
-      WORK.TABLE1 AS A
+      WORK.TABLE1 AS cur
    FULL JOIN 
-      WORK.TABLE2 AS B
+      WORK.TABLE2 AS prev
    ON 
-      A.account_id = B.account_id;
+      cur.account_id = prev.account_id;
 
-   CREATE TABLE WORK.AGGREGATED AS 
+   CREATE TABLE tmp_agg1 AS 
    SELECT 
-      status_flag,
+      churn_status,
       COUNT(*) AS total_count,
-      SUM(cur_balance) AS total_balance
+      SUM(balance) AS balance
    FROM 
-      WORK.TOTAL
+      tmp_tbl
    GROUP BY 
-      status_flag;
-QUIT;
+      churn_status;
+
+   CREATE TABLE tmp_agg2 AS 
+   SELECT 
+      cur_product_type, prev_product_type,
+      COUNT(*) AS total_count,
+      SUM(balance) AS balance
+   FROM 
+      tmp_tbl
+   where churn_status = 'STAY'
+   GROUP BY 1, 2;
+run;
 
