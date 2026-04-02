@@ -1,3 +1,5 @@
+-- make events
+
 -- Step 1: Assign row numbers globally and within each (id, flag) group
 WITH numbered AS (
     SELECT id
@@ -26,3 +28,14 @@ SELECT id
 FROM grouped
 GROUP BY id, grp_id, event_flag
 ORDER BY id, start_date;
+
+-- xml_agg
+
+SELECT
+    key_col,
+    TRIM(TRAILING ',' FROM
+        (XMLAGG(value_col || ',' ORDER BY value_col)
+            .GETCLOBVAL())
+    ) AS concatenated_values
+FROM your_table
+GROUP BY key_col;
