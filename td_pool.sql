@@ -34,8 +34,7 @@ ORDER BY id, start_date;
 SELECT
     key_col,
     TRIM(TRAILING ',' FROM
-        (XMLAGG(value_col || ',' ORDER BY value_col)
-            .GETCLOBVAL())
+        CAST(XMLAGG(value_col || ',' ORDER BY value_col) AS VARCHAR(32000))
     ) AS concatenated_values
 FROM your_table
 GROUP BY key_col;
